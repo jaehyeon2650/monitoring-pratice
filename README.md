@@ -80,7 +80,7 @@
 
    접속 URL:
    - Prometheus: [http://localhost:9090](http://localhost:9090)  
-   - Grafana: [http://localhost:3000](http://localhost:3000) (기본 계정: `admin / admin`)  
+   - Grafana: [http://localhost:3000](http://localhost:3000) (설정 계정: `admin / 1234`)  
    - Loki: [http://localhost:3100](http://localhost:3100)
 
 5. **Grafana 대시보드 구성**
