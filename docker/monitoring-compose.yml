@@ -1,0 +1,26 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ../prometheus:/etc/prometheus #Prometheus 설정 파일(prometheus.yml)을 호스트에서 관리
+      - ../prometheus/prometheus-data:/prometheus #Prometheus 시계열 데이터(TSDB)를 영구 보관
+    ports:
+      - "9090:9090"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml" #Prometheus가 사용할 설정 파일 경로 지정
+      - "--storage.tsdb.path=/prometheus" #Prometheus의 시계열 데이터(Time Series Data)를 저장할 디렉토리 경로 지정
+      - "--web.enable-lifecycle" #Prometheus 웹 인터페이스에서 재시작, 설정 reload 등 일부 관리 기능을 활성화
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=1234
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - ../grafana:/var/lib/grafana #컨테이너를 지워도 대시보드 설정이 유지
