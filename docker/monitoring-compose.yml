@@ -24,3 +24,15 @@ services:
       - prometheus
     volumes:
       - ../grafana:/var/lib/grafana #컨테이너를 지워도 대시보드 설정이 유지
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    user: root
+    ports:
+      - "3100:3100"
+    volumes:
+      - ../loki/loki-config.yml:/etc/loki/loki-config.yml
+      - ../loki/loki-data:/var/loki
+      - ../loki/wal-data:/wal
+    command: -config.file=/etc/loki/loki-config.yml

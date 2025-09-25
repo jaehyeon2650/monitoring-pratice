@@ -1,0 +1,39 @@
+auth_enabled: false # 인증 비활성화 (개발 환경에서 주로 사용)
+server:
+  http_listen_port: 3100 # Loki HTTP API 포트
+  grpc_listen_port: 0 # gRPC 비활성화
+
+ingester:
+  lifecycler:
+    ring:
+      kvstore:
+        store: inmemory   # ring 정보를 메모리에 저장 (단일 노드용)
+      replication_factor: 1 # 복제본 개수 (1이면 단일 인스턴스)
+  chunk_idle_period: 5m  # 로그 청크가 비활성 상태로 유지될 최대 시간
+  max_chunk_age: 1h   # 청크의 최대 수명 (이 시간이 지나면 강제로 플러시)
+
+storage_config:
+  tsdb_shipper:
+    active_index_directory: /loki/index # TSDB 인덱스 저장 경로
+    cache_location: /loki/cache # 인덱스 캐시 경로
+  filesystem:
+    directory: /loki/chunks  # 로그 청크 데이터를 저장할 디렉토리
+
+schema_config:
+  configs:
+    - from: "2025-09-24" # 스키마 적용 시작일
+      store: tsdb # 저장 방식 (TSDB)
+      object_store: filesystem # 오브젝트 스토어 대신 파일시스템 사용
+      schema: v11 # Loki 스키마 버전
+      index:
+        prefix: loki_index_ # 인덱스 파일 이름 접두사
+        period: 24h  # 인덱스 롤오버 주기 (24시간)
+
+limits_config:
+  reject_old_samples: true  # 너무 오래된 로그 샘플 거부
+  reject_old_samples_max_age: 168h # 허용 가능한 최대 과거 로그 나이 (7일)
+  allow_structured_metadata: false # 구조화된 메타데이터 비활성화
+
+table_manager:
+  retention_deletes_enabled: true # 보존 기간이 지난 로그 자동 삭제 활성화
+  retention_period: 720h # 로그 보존 기간 (30일)
