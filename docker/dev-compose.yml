@@ -1,0 +1,8 @@
+services:
+  node_exporter:
+    image: prom/node-exporter:latest # 현재 컴퓨터의 상태 즉, EC2의 매트릭 수집
+    container_name: node_exporter
+    ports:
+      - "9100:9100" #EC2 서버(OS 레벨)의 CPU, 메모리, 디스크, 네트워크 등 메트릭을 수집해서 http://<EC2_IP>:9100/metrics 로 노출
+    command:
+      - "--path.rootfs=/host"
